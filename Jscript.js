@@ -1,34 +1,36 @@
-var x = document.getElementById("GeoLoc");
-		
-function getLocation() {
-    //Check if Navigator is supported    
+function CMap() {
 	if (navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(showPosition,showError); // if so return coords obj to showPosition
-	}	
-	else {	
-		x.innerHTML ="Geolocation is not supported by this browser." + navigator.appName;
+		navigator.geolocation.getCurrentPosition(getPosition,showError);	
 	}
-}	
-
-function showPosition(position){
-	x.innerHTML ="Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude + "<br> ON " + navigator.appName;		
-}	
-//Error Handling on getting position
-function showError(error) {
-	switch(error.code) {
-		case error.PERMISSION_DENIED:
-	   		x.innerHTML = "Geolocation Denied by user." + "<br> ON " + navigator.appName;
-	    	break;
-	    case error.POSITION_UNAVAILABLE:
-	    	x.innerHTML = "Location Information is unavailable." + "<br> ON " + navigator.appName;
-	    	break;
-	    case error.TIMEOUT:
-	    	x.innerHTML = "The request timed out." + "<br> ON " + navigator.appName;
-	    	break;
-	    case error.UNKNOWN_ERROR:
-	    	x.innerHTML = "Unknown error" + "<br> ON " + navigator.appName;
-	    	break;
+	else
+	{
+		mapHolder.innerHTML = "Geolocation is not supported my this browser." + navigator.appName;
 	}
 }
 
+function getPosition (position){
+	lat = position.coords.latitude;
+	lon = position.coords.longitude;
+	latlon = new google.maps.LatLng(lat, lon);
+	mapholder = document.getElementById('mapHolder');
+	var mapOptions = {center:latlon,zoom:16,};
+	var map = new google.maps.Map(document.getElementById("mapHolder"),mapOptions);
+	var marker = new google.maps.Marker({position:latlon,map:map,title:"You are here.",animation: google.maps.Animation.BOUNCE}) 
+}
 
+function showError (error){
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            mapHolder.innerHTML = "Request for geolocation denied."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            mapHolder.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            mapHolder.innerHTML = "The request timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            mapHolder.innerHTML = "An unknown error occurred."
+            break;
+    }
+}
